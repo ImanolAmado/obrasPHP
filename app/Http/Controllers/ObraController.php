@@ -6,8 +6,7 @@ use App\Models\Obra;
 use Illuminate\Http\Request;
 
 class ObraController extends Controller
-{
-    
+{   
 
 
     public function index()
@@ -87,7 +86,6 @@ class ObraController extends Controller
         $obra->delete();
 
         return response()->json(['La Obra ha sido eliminada correctamente']);
-
         
     }
 }
