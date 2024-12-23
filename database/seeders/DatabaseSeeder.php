@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     {
 
         //User::factory(15)->create();
-        Obra::factory(15)->create();        
+        Obra::factory(50)->create();        
         //ObraUser::factory(20)->create();
         
         // \App\Models\User::factory(10)->create();

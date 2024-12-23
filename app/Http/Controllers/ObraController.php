@@ -9,19 +9,20 @@ class ObraController extends Controller
 {   
 
 
-    public function index()
-    {
-        //return response()->json(Obra::all());
-
-        // filtramos las obras para mostrar solo las "aprobadas"
+    public function categoria($categoria)
+    {       
+        // Filtramos las obras para mostrar solo los que tengan estado='aprobado'.
         $obras = Obra::all();
-        $obrasFiltradas = $obras->filter(fn($item) => $item->estado == 'aprobada');
-        
-        return response()->json($obrasFiltradas);
+        $obrasAprobadas = $obras->filter(fn($item) => $item->estado == 'aprobada');
 
+        // Aplicamos filtro de categoría
+        if($categoria=='todos'){
+            return response()->json($obrasAprobadas->values());
+        } else {
+        $obrasFiltradas = $obrasAprobadas->filter(fn($item) => $item->categoria == $categoria);                
+        return response()->json($obrasFiltradas->values());
+        }
     }
-
-    
 
  
     public function store(Request $request)

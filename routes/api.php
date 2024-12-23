@@ -23,13 +23,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::controller(ObraController::class)->group(function(){
-    Route::get('/obras', 'index')->name('obras.index');
-    Route::get('/obras/{id}', 'show')->name('obras.show');
+     
+    Route::get('/obras/{categoria}', 'categoria')->name('obras.categoria'); 
+    Route::get('/obras/todos/{id}', 'show')->name('obras.show');
+
     Route::middleware('auth:sanctum')->post('/obras/', 'store')->name('obras.store');
     Route::middleware('auth:sanctum')->put('/obras/{id}', 'update')->name('update.obras');
     Route::middleware('auth:sanctum')->delete('/obras/{id}', 'destroy')->name('delete.obas');
 });
-
 
 
 Route::post('login', [AuthController::class, 'login']);
