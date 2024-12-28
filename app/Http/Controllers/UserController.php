@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
+use \Auth;
 
 class UserController extends Controller
 {
@@ -14,8 +15,7 @@ class UserController extends Controller
         $request->validate([        
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required',
-            
+            'password' => 'required',            
         ]);
               
         $user = new User();
@@ -26,6 +26,5 @@ class UserController extends Controller
         $user->save();       
         return response()->json($user, 201);   
     }
-
 
 }

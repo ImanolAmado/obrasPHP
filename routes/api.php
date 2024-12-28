@@ -44,3 +44,6 @@ Route::post('login', [AuthController::class, 'login']);
 
 // Logout usuarios
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
+
+// Info de usuario concreto
+Route::middleware('auth:sanctum')->post('perfil', [AuthController::class, 'perfil']);

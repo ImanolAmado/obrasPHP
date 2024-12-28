@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Obra;
 use Illuminate\Http\Request;
+use \Auth;
 
 class ObraController extends Controller
 {   
@@ -32,12 +33,19 @@ class ObraController extends Controller
             'descripcion' => 'required',
             'imagen' => 'required|string|max:300',
             'categoria' => 'required|string|max:60',
-            'estado' => 'required|string|max:10',
-            'user_id' => 'required'
-        ]);
-    
-        $obra = Obra::create($validated);
-        return response()->json($obra, 201);    
+            'estado' => 'required|string|max:10',           
+        ]);    
+                
+        $obra = new Obra();
+        $obra->titulo = $request->titulo;
+        $obra->descripcion = $request->descripcion;
+        $obra->categoria = $request->categoria;
+        $obra->estado = $request->estado;
+        $obra->imagen = $request->imagen;
+        $obra->user_id = Auth::user()->id;
+        $obra->save();
+
+        return response()->json($obra->user_id, 201);    
     }
 
    
