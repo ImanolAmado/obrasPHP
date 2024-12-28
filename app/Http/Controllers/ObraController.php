@@ -90,7 +90,7 @@ class ObraController extends Controller
     
         // Encontrar el registro por el id
         $obra = Obra::find($id);
-
+        
         // Borrar obra
         $obra->delete();
 

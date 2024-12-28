@@ -24,26 +24,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::controller(ObraController::class)->group(function(){
-     
     // Rutas "get"
     Route::get('/obras/{categoria}', 'categoria')->name('obras.categoria'); 
     Route::get('/obras/todos/{id}', 'show')->name('obras.show');
 
     // Rutas "CRUD" para usuarios autenticados
     Route::middleware('auth:sanctum')->post('/obras', 'store')->name('obras.store');
-    Route::middleware('auth:sanctum')->put('/obras/{id}', 'update')->name('update.obras');
-    Route::middleware('auth:sanctum')->delete('/obras/{id}', 'destroy')->name('delete.obas');
+    Route::middleware('auth:sanctum')->put('/obras/{id}', 'update')->name('obras.update');
+    Route::middleware('auth:sanctum')->delete('/deleteObras/{id}', 'destroy')->name('obras.delete');
 });
 
 
-// Registrar nuevos usuarios
-Route::post('register', [UserController::class, 'register']);
+Route::controller(UserController::class)->group(function(){
+    Route::post('register', '/register');
+    Route::middleware('auth:sanctum')->get('/perfil', 'perfil');
+    Route::middleware('auth:sanctum')->get('/userObra',  'userObra');
+});
 
-// Login usuarios
-Route::post('login', [AuthController::class, 'login']);
 
-// Logout usuarios
-Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
+Route::controller(AuthController::class)->group(function(){
+    Route::post('login',  'login');
+    Route::middleware('auth:sanctum')->post('logout',  'logout');
+});
 
-// Info de usuario concreto
-Route::middleware('auth:sanctum')->post('perfil', [AuthController::class, 'perfil']);
+
+

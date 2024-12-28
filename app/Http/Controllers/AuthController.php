@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \Auth;
 use App\Models\User;
+use App\Models\Obra;
 
 class AuthController extends Controller
 {
@@ -35,18 +36,5 @@ public function logout(Request $request){
     return response()->json(['messaje' => 'logout exitoso']);
 }
 
-
-
-public function perfil(Request $request)
-    {
-      // Devolvemos datos seleccionados del usuario
-        $perfil = new User();
-        $perfil->id = Auth::user()->id;
-        $perfil->name =  Auth::user()->name;
-        $perfil->email =  Auth::user()->email;  
-        $perfil->created_at = Auth::user()->created_at;
-
-        return response()->json($perfil, 201);
-    }
 
 }
