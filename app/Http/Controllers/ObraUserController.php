@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ObraUser;
+use \Auth;
 use Illuminate\Http\Request;
 
 class ObraUserController extends Controller
@@ -27,26 +28,36 @@ class ObraUserController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
+    // Guarda el voto de un usuario a una obra
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'voto' => 'required',
+            'id' => 'required',                 
+        ]);    
+                
+        $obraUser = new ObraUser();
+        $obraUser->obra_id = $request->id;
+        $obraUser->user_id = Auth::user()->id;
+        $obraUser->voto = $request->voto;       
+        $obraUser->save();
+
+        return response()->json(['Voto registrado correctamente']); 
+    
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ObraUser  $obraUser
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ObraUser $obraUser)
-    {
-        //
+   
+    public function show($id)
+    {    
+    $id_user = Auth::user()->id;
+    $id_obra = $id;
+    $encontrado = ObraUser::where('user_id', $id_user)->where('obra_id',$id_obra)->get();      
+    if(count($encontrado)==0){
+    return response()->json(false);
+    } else {
+    return response()->json(true);
+    }
     }
 
     /**

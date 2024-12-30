@@ -56,11 +56,8 @@ class ObraController extends Controller
         return response()->json(Obra::find($id));
     }
 
-   
     
-
-
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         
         // Validar datos del request
@@ -74,27 +71,24 @@ class ObraController extends Controller
         ]);
 
         // Encontrar el registro por el id
-        $obra = Obra::find($id);
+        $obra = Obra::find($request->id);
 
         // Actualizar usando asignación masiva
         $obra->update($validatedData);
 
-        return response()->json(['Obra actualizada exitosamente']);
-   
+        return response()->json(['Obra actualizada exitosamente']);   
     }
 
    
 
     public function destroy($id)
-    {
-    
+    {    
         // Encontrar el registro por el id
         $obra = Obra::find($id);
         
         // Borrar obra
         $obra->delete();
 
-        return response()->json(['La Obra ha sido eliminada correctamente']);
-        
+        return response()->json(['La Obra ha sido eliminada correctamente']);        
     }
 }
