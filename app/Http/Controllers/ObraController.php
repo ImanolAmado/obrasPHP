@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ObraUser;
 use Illuminate\Http\Request;
 use \Auth;
+use \Gate;
 
 class ObraController extends Controller
 {   
@@ -29,15 +30,21 @@ class ObraController extends Controller
 
  
     public function store(Request $request)
-    {
+    {            
+        
+         // lanza error 403 si el usuario tiene ya una obra en la BBDD
+         if (Gate::denies('encontrarObra', Obra::class)) {
+           abort(403, "¡Error! Ya has subido una obra");
+        } 
+               
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required',
             'imagen' => 'required|string|max:300',
             'categoria' => 'required|string|max:60',
             'estado' => 'required|string|max:10',           
-        ]);    
-                
+        ]);            
+
         $obra = new Obra();
         $obra->titulo = $request->titulo;
         $obra->descripcion = $request->descripcion;
@@ -47,7 +54,8 @@ class ObraController extends Controller
         $obra->user_id = Auth::user()->id;
         $obra->save();
 
-        return response()->json($obra->user_id, 201);    
+        return response()->json($obra->user_id, 201);          
+       
     }
 
    
@@ -75,6 +83,13 @@ class ObraController extends Controller
         // Encontrar el registro por el id
         $obra = Obra::find($request->id);
 
+        // Utilizamos la misma "policy" que en delete. Si el id del user
+        // no concuerda con el user_id de la obra (el dueño de la obra),
+        // lanza error 403 
+        if (Gate::denies('deleteObra', $obra)) {
+            abort(403, "No estás autorizado para modificar la obra");
+         } 
+
         // Actualizar usando asignación masiva
         $obra->update($validatedData);
 
@@ -84,9 +99,18 @@ class ObraController extends Controller
    
 
     public function destroy($id)
-    {    
-        // Encontrar el registro por el id
-        $obra = Obra::find($id);
+    {   
+
+         // Encontrar el registro por el id
+         $obra = Obra::find($id);
+
+        
+        // Se llama a nuestra "policy". Si el id del usuario autenticado
+        // no concuerda con el user_id de la obra (el dueño de la obra),
+        // lanza error 403 
+        if (Gate::denies('deleteObra', $obra)) {
+           abort(403, "No estás autorizado para eliminar la obra");
+        }       
         
         // Borrar obra
         $obra->delete();
