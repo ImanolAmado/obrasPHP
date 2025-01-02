@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Obra;
+use Illuminate\Support\Facades\DB;
+use App\Models\ObraUser;
 use Illuminate\Http\Request;
 use \Auth;
 
@@ -90,5 +92,26 @@ class ObraController extends Controller
         $obra->delete();
 
         return response()->json(['La Obra ha sido eliminada correctamente']);        
+    }
+
+
+    public function masVotadas()
+    {       
+    
+    // Consulta sin join    
+    // $obras = ObraUser::select('obra_id', ObraUser::raw('SUM(voto) as total_votos'))->groupBy('obra_id')->orderBy('total_votos', 'des')->take(3)->get();
+   
+    // Consulta con join
+    // https://www.educative.io/answers/how-to-perform-inner-join-of-two-tables-in-laravel-query
+
+    $masVotadas = DB::table('obras')
+    ->join('obra_users', 'obras.id', '=', 'obra_users.obra_id')
+    ->select('id', 'obras.titulo', 'obras.categoria', 'obras.imagen', DB::raw('SUM(obra_users.voto) as total_votos'))
+    ->groupBy('obra_users.obra_id')
+    ->orderBy('total_votos', 'desc')
+    ->take(3)
+    ->get();
+
+    return response()->json($masVotadas);        
     }
 }

@@ -29,6 +29,7 @@ Route::controller(ObraController::class)->group(function(){
     // Rutas "get"
     Route::get('/obras/{categoria}', 'categoria')->name('obras.categoria'); 
     Route::get('/obras/todos/{id}', 'show')->name('obras.show');
+    Route::get('/masVotadas', 'masVotadas')->name('obras.masVotadas');
 
     // Rutas "CRUD" para usuarios autenticados
     Route::middleware('auth:sanctum')->post('/obras', 'store')->name('obras.store');

@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        //User::factory(15)->create();
-        Obra::factory(50)->create();        
-        //ObraUser::factory(20)->create();
-        
-        // \App\Models\User::factory(10)->create();
+    
+    Obra::factory(50)->create(); 
+    $this->call(ObraUserSeeder::class);
+    
+       
 
         /*
         User::factory()->create([
@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
         'email' => 'test@example.com',
         'password' => bcrypt('password')
         ]);
-
         */
 
     }
