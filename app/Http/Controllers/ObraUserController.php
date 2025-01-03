@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ObraUser;
 use \Auth;
+use \Gate;
 use Illuminate\Http\Request;
 
 class ObraUserController extends Controller
@@ -36,11 +37,25 @@ class ObraUserController extends Controller
             'voto' => 'required',
             'id' => 'required',                 
         ]);    
+
+        // Desde postman se puede emitir votos superiores a 5 por
+        // lo que creamos una política para evitarlo. Un usuario
+        // no puede votar 2 veces a una obra porque lanzaría un
+        // SQL Exception
+
+        if (Gate::denies('votarObra',  [ObraUser::class, $request->voto])) {
+            abort(403, "El voto debe ser entre 1-5");
+         }       
                 
         $obraUser = new ObraUser();
         $obraUser->obra_id = $request->id;
         $obraUser->user_id = Auth::user()->id;
         $obraUser->voto = $request->voto;       
+
+
+
+
+        
         $obraUser->save();
 
         return response()->json(['Voto registrado correctamente']); 
@@ -48,6 +63,8 @@ class ObraUserController extends Controller
     }
 
    
+    // Si un usuario ha votado una obra concreta, devolvemos true,
+    // si no, devolvemos false
     public function show($id)
     {    
     $id_user = Auth::user()->id;

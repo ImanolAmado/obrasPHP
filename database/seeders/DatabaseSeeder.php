@@ -17,14 +17,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
     
-    Obra::factory(50)->create(); 
+    Obra::factory(60)->create(); 
+
+    // Crea 6 registros iniciales de votaciones en obra_users
     $this->call(ObraUserSeeder::class);
-    
-       
 
-        /*
+    
+             /*
         User::factory()->create([
         'name' => 'Test User',
         'email' => 'test@example.com',

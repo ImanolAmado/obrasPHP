@@ -14,9 +14,19 @@ class ObraController extends Controller
 
 
     public function categoria($categoria)
-    {       
-        // Filtramos las obras para mostrar solo los que tengan estado='aprobado'.
-        $obras = Obra::all();
+    {             
+        
+        // ¿Cómo hacer left join?
+        // https://laracasts.com/discuss/channels/laravel/laravel-db-query-builder-with-left-join-using-an-raw-expression
+        
+        // Cogemos las obras de tabla "obras" y las votaciones de tabla "obras_user"
+        $obras = DB::table('obras')
+        ->leftJoin('obra_users', 'obras.id', '=', 'obra_users.obra_id')
+        ->select('id', 'obras.titulo', 'obras.categoria', 'obras.imagen', 'obras.descripcion', 'obras.estado', DB::raw('SUM(obra_users.voto) as total_votos'))
+        ->groupBy('obras.id')        
+        ->get();
+
+        // Filtramos las obras para mostrar solo los que tengan estado='aprobado'.        
         $obrasAprobadas = $obras->filter(fn($item) => $item->estado == 'aprobada');
 
         // Aplicamos filtro de categoría
@@ -33,7 +43,7 @@ class ObraController extends Controller
     {            
         
          // lanza error 403 si el usuario tiene ya una obra en la BBDD
-         if (Gate::denies('encontrarObra', Obra::class)) {
+         if (Gate::denies('buscarObra', Obra::class)) {
            abort(403, "¡Error! Ya has subido una obra");
         } 
                
@@ -59,11 +69,20 @@ class ObraController extends Controller
     }
 
    
-
-
+    // Devuelve una obra concreta por id
     public function show($id)
     {    
-        return response()->json(Obra::find($id));
+
+        // left join para conseguir las votaciones de la tabla "obra_users"
+
+        $obra = DB::table('obras')
+        ->leftJoin('obra_users', 'obras.id', '=', 'obra_users.obra_id')
+        ->select('id', 'obras.titulo', 'obras.categoria', 'obras.imagen', 'obras.descripcion', 'obras.estado', DB::raw('SUM(obra_users.voto) as total_votos'))
+        ->where('obras.id',$id)
+        ->groupBy('obras.id')        
+        ->get();
+       
+        return response()->json($obra->values());
     }
 
     
@@ -84,7 +103,7 @@ class ObraController extends Controller
         $obra = Obra::find($request->id);
 
         // Utilizamos la misma "policy" que en delete. Si el id del user
-        // no concuerda con el user_id de la obra (el dueño de la obra),
+        // no coincide con el user_id de la obra (el dueño de la obra),
         // lanza error 403 
         if (Gate::denies('deleteObra', $obra)) {
             abort(403, "No estás autorizado para modificar la obra");

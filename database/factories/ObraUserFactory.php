@@ -18,6 +18,9 @@ class ObraUserFactory extends Factory
      */
     public function definition()
     {
+
+        // No se llama a esta factory ya que puede generar datos de ids 
+        // duplicadas.
         return [
             'obra_id' => Obra::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id,

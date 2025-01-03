@@ -3,6 +3,8 @@
 namespace App\Providers;
 use App\Models\Obra;
 use App\Policies\ObrasPolicy;
+use App\Models\ObraUser;
+use App\Policies\ObraUserPolicy;
 use \Gate;
 
 // use Illuminate\Support\Facades\Gate;
@@ -28,5 +30,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Gate::policy(Obra::class, ObrasPolicy::class);
+        Gate::policy(ObraUser::class, ObraUserPolicy::class);
     }
 }

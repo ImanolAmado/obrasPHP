@@ -20,7 +20,7 @@ class ObrasPolicy
     }
 
 
-    public function encontrarObra(User $user){
+    public function buscarObra(User $user){
 
         // Devuelve true / false si usuario tiene ya una obra
         return !Obra::where('user_id', $user->id)->exists(); 
